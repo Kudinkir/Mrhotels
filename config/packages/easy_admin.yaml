@@ -1,0 +1,19 @@
+easy_admin:
+    site_name : "Hotels test task"
+    user:
+        display_name : true
+        name_property_path : "email"
+    entities:
+        Hotels:
+            class: App\Entity\Hotels
+            label: 'Отели'
+            list:
+                title: 'Отели'
+                fields: ['id', 'name', 'slug', 'rooms']
+                template: 'templates/base.html.twig'
+        Rooms:
+            class: App\Entity\Rooms
+        Reservation:
+            class: App\Entity\Reservation
+
+
