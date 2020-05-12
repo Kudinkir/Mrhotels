@@ -85,6 +85,7 @@ class EasyAdminSubscriber implements EventSubscriberInterface
     {
         return [
             EasyAdminEvents::POST_UPDATE => 'onPreUpdate',
+            EasyAdminEvents::POST_PERSIST => 'onPreUpdate',
         ];
     }
 
