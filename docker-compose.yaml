@@ -1,0 +1,78 @@
+version: '2'
+services:
+    hotels_php:
+        container_name: hotels_php
+        build: php-fpm
+        ports:
+            - '9008:9000'
+        volumes:
+            - ${PWD}:/var/www/symfony
+            - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+            - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+        links:
+            - hotels_db
+            - hotels_redis
+        environment:
+            REDIS_HOST: hotels_redis
+            REDIS_PORT: 6379
+        networks:
+            main:
+                aliases:
+                    - hotels_php
+    hotels_postgres:
+        container_name: hotels_postgres
+        image: postgres
+        environment:
+        - POSTGRES_DB=symfony
+        - POSTGRES_USER=symfony
+        - POSTGRES_PASSWORD=symfony
+        - PGDATA=/var/lib/postgresql/data/db-files/
+        volumes:
+        - ./db/db.dump:/tmp/db.dump
+        ports:
+        - "5432:5432"
+        networks:
+            main:
+                aliases:
+                    - hotels_postgres
+    hotels_nginx:
+        container_name: hotels_nginx
+        build: nginx
+        ports:
+            - '8084:80'
+            - '1341:1341'
+        volumes_from:
+            - hotels_php
+        volumes:
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./logs/nginx/:/var/log/nginx:cached
+        networks:
+            main:
+                aliases:
+                    - hotels_nginx
+    hotels_db:
+        container_name: hotels_db
+        image: mariadb:latest
+        restart: on-failure
+        ports:
+          - "3313:3306"
+        volumes:
+          - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+          - ./db:/var/lib/mysql
+        environment:
+          - MYSQL_ROOT_PASSWORD=root
+          - MYSQL_DATABASE=hootels
+          - MYSQL_USER=root
+        networks:
+            main:
+                aliases:
+                    - mysql
+    hotels_redis:
+        container_name: hotels_redis
+        image: redis:4-alpine
+        networks:
+            main:
+                aliases:
+                    - hotels_redis
+networks:
+    main:
