@@ -4,6 +4,13 @@
 	cd Mrhotels
 	composer update
 	composer install 
+
+Docker
+1) docker-compose build
+2) docker-compose up
+3) docker exec -it hotels_php bash (+ в нем выролняем миграции )
+4) docker exec -it hotels_db mysql -u root -proot hotels (+ Создаем пользователя)
+5) проект доступен на http://localhost:1341/
 	
 Создаем базу 
 	Прописываем реквизиты в .env
